@@ -29,6 +29,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+
 import java.io.*;
 import java.net.InetAddress;
 import java.util.Properties;
