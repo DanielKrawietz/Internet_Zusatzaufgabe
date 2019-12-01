@@ -1,4 +1,4 @@
-/*
+package test.listFolders;/*
  * Copyright (c) 1996-2010 Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,8 +52,8 @@ public class folderlist {
     static String url = null;
     static String root = null;
     static String pattern = "%";
-    static boolean recursive = false;
-    static boolean verbose = false;
+    static boolean recursive = true;
+    static boolean verbose = true;
     static boolean debug = false;
 
     public static void main(String argv[]) throws Exception {

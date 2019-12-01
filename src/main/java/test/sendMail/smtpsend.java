@@ -1,4 +1,4 @@
-/*
+package test.sendMail;/*
  * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,8 +76,11 @@ public class smtpsend {
 	}
     }
      */
+    //-Dmail.smtp.starttls.enable=true -Dmail.smtp.port=587
+	//-d -M smtp.gmail.com -U internetzusatzaufgabe2019@gmail.com -P h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\]@H@q=P<xV=-*xNn/n9~A3*/i -o internetzusatzaufgabe2019@gmail.com
 
-    public static void main(String[] argv) {
+
+	public static void main(String[] argv) {
 	String  to, subject = null, from = null, 
 		cc = null, bcc = null, url = null;
 	String mailhost = null;
@@ -174,8 +177,10 @@ public class smtpsend {
 	    Properties props = System.getProperties();
 	    if (mailhost != null)
 		props.put("mail." + prot + ".host", mailhost);
-	    if (auth)
-		props.put("mail." + prot + ".auth", "true");
+
+		props.put("mail.smtp.auth", "true");
+		Authenticator authenticator = new SMTPAuthenticator();
+		Session session = Session.getInstance(props, authenticator);
 
 	    /*
 	     * Create a Provider representing our extended SMTP transport
@@ -187,7 +192,6 @@ public class smtpsend {
 	     */
 
 	    // Get a Session object
-	    Session session = Session.getInstance(props, null);
 	    if (debug)
 		session.setDebug(true);
 
