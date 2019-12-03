@@ -206,18 +206,17 @@ public class smtpsend {
 	     */
 	    Message msg = new MimeMessage(session);
 	    if (from != null)
-		msg.setFrom(new InternetAddress(from));
+		    msg.setFrom(new InternetAddress(from));
 	    else
-		msg.setFrom();
+		    msg.setFrom();
 
-	    msg.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(to, false));
+	    msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+
 	    if (cc != null)
-		msg.setRecipients(Message.RecipientType.CC,
-					InternetAddress.parse(cc, false));
+		    msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc, false));
+
 	    if (bcc != null)
-		msg.setRecipients(Message.RecipientType.BCC,
-					InternetAddress.parse(bcc, false));
+		    msg.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false));
 
 	    msg.setSubject(subject);
 
@@ -253,8 +252,7 @@ public class smtpsend {
 	     * demonstration purposes so we need to manage the Transport
 	     * object explicitly.
 	     */
-	    SMTPTransport t =
-		(SMTPTransport)session.getTransport(prot);
+	    SMTPTransport t = (SMTPTransport)session.getTransport(prot);
 	    try {
 		if (auth)
 		    t.connect(mailhost, user, password);
