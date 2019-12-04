@@ -40,7 +40,6 @@ public class MailSender extends Menu{
          * Message properties
          */
 
-        debug = true;
         from = userObj.getUser();
 
         String text = "";

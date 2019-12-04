@@ -13,11 +13,11 @@ public class Login extends Menu {
     public Login() {
         this.addAction("Login", this::readLoginData);
         this.addAction("Login with saved User", this::getLoginData);
-        this.addAction("save this User", this::saveLoginDataToFile);
-        this.addAction("back", this::back);
+        this.addAction("Save this User", this::saveLoginDataToFile);
+        this.addAction("Back", this::back);
 
     }
-    private boolean debug = true;
+    private boolean debug = false;
 
     public void back(){
         super.exit();
@@ -29,60 +29,57 @@ public class Login extends Menu {
 
     private void readLoginData() {
 
-        User userObj = User.currentUser;
-        if(userObj == null)
-            userObj = new User();
+        if(User.currentUser == null)
+            User.currentUser = new User();
+
+        User user = User.currentUser;
 
         if (debug){
-            userObj.setUser("internetzusatzaufgabe2019@gmail.com");
-            userObj.setPassword("h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\\]@H@q=P<xV=-*xNn/n9~A3*/i");
-            userObj.setSmtpHost("smtp.gmail.com");
-            userObj.setSmtpPort(587);
+            user.setUser("internetzusatzaufgabe2019@gmail.com");
+            user.setPassword("h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\\]@H@q=P<xV=-*xNn/n9~A3*/i");
+            user.setSmtpHost("smtp.gmail.com");
+            user.setSmtpPort(587);
         }else{
             System.out.println("User: ");
-            userObj.setUser(scanner.nextLine());
+            user.setUser(scanner.nextLine());
 
             System.out.println("Password: ");
-            userObj.setPassword(scanner.nextLine());
-
+            user.setPassword(scanner.nextLine());
 
             System.out.println("SMTP Host: ");
-            userObj.setSmtpHost(scanner.nextLine());
-
+            user.setSmtpHost(scanner.nextLine());
 
             System.out.println("SMTP Port: ");
-            userObj.setSmtpPort(scanner.nextInt());
+            user.setSmtpPort(scanner.nextInt());
 
             System.out.println("IMAP Host: ");
-            userObj.setImapHost(scanner.nextLine());
+            user.setImapHost(scanner.nextLine());
 
             System.out.println("IMAP Port: ");
-            userObj.setImapPort(scanner.nextInt());
+            user.setImapPort(scanner.nextInt());
         }
-        User.currentUser = userObj;
+
         this.back();
-
-
-
     }
 
 
 
     private void getLoginData() {
+
         Scanner fileScanner = null;
         try {
             File file = new File("logindata.txt");
             fileScanner = new Scanner(file);
 
-            User userObj = User.currentUser;
-            if(userObj == null)
-                userObj = new User();
+            User userObj = new User();
             userObj.setUser(fileScanner.nextLine());
             userObj.setPassword(fileScanner.nextLine());
             userObj.setSmtpHost(fileScanner.nextLine());
             userObj.setSmtpPort(fileScanner.nextInt());
             userObj.setImapHost(fileScanner.nextLine());
             userObj.setImapPort(fileScanner.nextInt());
+
+            User.currentUser = userObj;
         } catch (IOException e) {
             System.err.println("Could not read File");
         }catch (NoSuchElementException e) {
@@ -92,26 +89,37 @@ public class Login extends Menu {
             if (fileScanner!= null)
                 fileScanner.close();
         }
-
-
-
     }
 
     private void saveLoginDataToFile() {
+
         User userObj = User.currentUser;
 
-        if(userObj == null)
-            userObj = new User();
+        if( userObj == null) {
+            readLoginData();
+        }
+
+        String user = userObj.getUser();
+        String password = userObj.getPassword();
+        String smtpHost = userObj.getSmtpHost();
+        int smtpPort = userObj.getSmtpPort();
+        String imapHost = userObj.getImapHost();
+        int imapPort = userObj.getImapPort();
+
+        user = user == null ? "" : user;
+        password = password == null ? "" : password;
+        smtpHost = smtpHost == null ? "" : smtpHost;
+        imapHost = imapHost == null ? "" : imapHost;
 
         FileWriter writer = null;
         try {
             writer = new FileWriter("logindata.txt");
-            writer.write(userObj.getUser());
-            writer.write(userObj.getPassword());
-            writer.write(userObj.getSmtpHost());
-            writer.write(userObj.getSmtpPort());
-            writer.write(userObj.getImapHost());
-            writer.write(userObj.getImapPort());
+            writer.write(user + "\n");
+            writer.write(password + "\n");
+            writer.write(smtpHost + "\n");
+            writer.write(Integer.toString(smtpPort) + "\n");
+            writer.write(imapHost + "\n");
+            writer.write(Integer.toString(imapPort) + "\n");
         }catch (IOException e){
             System.err.println("Could not create File");
         }finally {
@@ -122,7 +130,5 @@ public class Login extends Menu {
                 }
             }
         }
-
-
     }
 }
