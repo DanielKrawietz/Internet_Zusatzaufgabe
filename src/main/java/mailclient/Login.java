@@ -30,34 +30,34 @@ public class Login extends Menu {
         User user = User.currentUser;
 
         if (debug){
-            userObj.setUser("internetzusatzaufgabe2019@gmail.com");
-            userObj.setPassword("h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\\]@H@q=P<xV=-*xNn/n9~A3*/i");
-            userObj.setSmtpHost("smtp.gmail.com");
-            userObj.setSmtpPort(587);
-            userObj.setImapHost("imap.gmail.com");
-            userObj.setImapPort(993);
+            user.setUser("internetzusatzaufgabe2019@gmail.com");
+            user.setPassword("h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\\]@H@q=P<xV=-*xNn/n9~A3*/i");
+            user.setSmtpHost("smtp.gmail.com");
+            user.setSmtpPort(587);
+            user.setImapHost("imap.gmail.com");
+            user.setImapPort(993);
         }else{
             System.out.println("User: ");
-            userObj.setUser(scanner.nextLine());
+            user.setUser(scanner.nextLine());
 
             System.out.println("Password: ");
-            userObj.setPassword(scanner.nextLine());
+            user.setPassword(scanner.nextLine());
 
 
             System.out.println("SMTP Host: ");
-            userObj.setSmtpHost(scanner.nextLine());
+            user.setSmtpHost(scanner.nextLine());
 
 
             System.out.println("SMTP Port: ");
-            userObj.setSmtpPort(scanner.nextInt());
+            user.setSmtpPort(scanner.nextInt());
 
             System.out.println("IMAP Host: ");
-            userObj.setImapHost(scanner.nextLine());
+            user.setImapHost(scanner.nextLine());
 
             System.out.println("IMAP Port: ");
-            userObj.setImapPort(scanner.nextInt());
+            user.setImapPort(scanner.nextInt());
         }
-        User.currentUser = userObj;
+        User.currentUser = user;
         this.addAction("exit", super::exit);
         this.exit();
 
