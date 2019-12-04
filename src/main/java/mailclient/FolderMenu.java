@@ -25,7 +25,7 @@ public class FolderMenu extends Menu {
         Properties props = System.getProperties();
         Session session = Session.getInstance(props, null);
 
-
+        /*
         try {
             if (protocol != null)
                 store = session.getStore(protocol);
@@ -41,6 +41,8 @@ public class FolderMenu extends Menu {
             System.err.println("Cant Connect to Server");
             System.exit(-1);
         }
+        */
+
 
 
 

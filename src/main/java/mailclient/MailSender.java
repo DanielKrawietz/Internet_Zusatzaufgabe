@@ -4,7 +4,6 @@ import com.sun.mail.smtp.SMTPAddressFailedException;
 import com.sun.mail.smtp.SMTPAddressSucceededException;
 import com.sun.mail.smtp.SMTPSendFailedException;
 import com.sun.mail.smtp.SMTPTransport;
-import test.sendMail.SMTPAuthenticator;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -16,38 +15,46 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Scanner;
 
-public class MailSender {
+public class MailSender extends Menu{
 
     String to = null;
     String subject = null;
     String from = null;
-    String mailhost = null;
     String mailer = "MailSender";
-    Scanner scanner = new Scanner(System.in);
+
     boolean debug = false;
     boolean verbose = false;
-    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    public void sendMail(User userObj) {
+    @Override
+    public void dialog() {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        User userObj = User.currentUser;
 
-        if(userObj.getPassword() == null || userObj.getUser() == null || userObj.getSmtpHost() == null) {
-            System.out.println("You are not logged in");
-            return ;
+        if(userObj == null || userObj.getPassword() == null || userObj.getUser() == null || userObj.getSmtpHost() == null) {
+            System.err.println("You are not logged in");
+            this.exit();
+            return;
         }
 
         /**
          * Message properties
          */
 
-        mailhost = userObj.getSmtpHost();
         debug = true;
         from = userObj.getUser();
 
-        System.out.println("To: ");
-        to = scanner.nextLine();
+        String text = "";
+        try {
+            System.out.println("To: ");
+            to = in.readLine();
+            System.out.println("Subject: ");
+            subject = in.readLine();
+            text = collect(in);
+        }catch (IOException e){
+            System.err.println("Error while reading");
+        }
 
-        System.out.println("Subject: ");
-        subject = scanner.nextLine();
+
 
         try {
 
@@ -56,11 +63,16 @@ public class MailSender {
              */
 
             Properties props = System.getProperties();
-            if (mailhost != null)
-                props.put("mail.smtp.host", mailhost);
+            if (userObj.getSmtpHost() != null)
+                props.put("mail.smtp.host", userObj.getSmtpHost());
+
+            props.put("mail.smtp.starttls.enable","true");
 
             props.put("mail.smtp.auth", "true");
-            Authenticator authenticator = new SMTPAuthenticator();
+            props.put("mail.smtp.port", Integer.toString(userObj.getSmtpPort()));
+            props.put("mail.smtp.user", userObj.getUser());
+
+            Authenticator authenticator = new SMTPAuthenticator(userObj.getUser(), userObj.getPassword());
             Session session = Session.getInstance(props, authenticator);
 
             // Get a Session object
@@ -75,7 +87,7 @@ public class MailSender {
             msg.setFrom(new InternetAddress(from));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
             msg.setSubject(subject);
-            String text = collect(in);
+
             msg.setText(text);
             msg.setHeader("X-Mailer", mailer);
             msg.setSentDate(new Date());
@@ -114,10 +126,10 @@ public class MailSender {
                     System.out.println("  Response: " + ssfe.getMessage());
                 } else {
                     if (verbose)
-                        System.out.println("Send failed: " + sfe.toString());
+                        System.err.println("Send failed: " + sfe.toString());
                 }
                 Exception ne;
-                while ((ne = sfe.getNextException()) != null &&
+                if ((ne = sfe.getNextException()) != null &&
                         ne instanceof MessagingException) {
                     sfe = (MessagingException)ne;
                     if (sfe instanceof SMTPAddressFailedException) {
@@ -148,15 +160,24 @@ public class MailSender {
                     e.printStackTrace();
             }
         }
+        this.exit();
     }
 
     /**
      * Read the body of the message until EOF.
      */
     public static String collect(BufferedReader in) throws IOException {
+        System.out.println("Text: (end with q)");
         String line;
         StringBuffer sb = new StringBuffer();
-        while ((line = in.readLine()) != null) {
+        while (true) {
+            line = in.readLine();
+            if (line != null && line.contains("q")) {
+                System.out.println("0: exit\n1: continue");
+                String temp = in.readLine();
+                if (temp.contains("0"))
+                    break;
+            }
             sb.append(line);
             sb.append("\n");
         }

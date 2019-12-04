@@ -1,10 +1,12 @@
 package mailclient;
 
 public class User {
+    public static User currentUser;
+
     private String smtpHost = null;
-    private String smtpPort = null;
+    private int smtpPort = 0;
     private String imapHost = null;
-    private String imapPort = null;
+    private int imapPort = 0;
     private String user = null;
     private String password = null;
 
@@ -24,7 +26,7 @@ public class User {
      * Sets SMTP Port
      * @param smtpPort
      */
-    public void setSmtpPort(String smtpPort) {
+    public void setSmtpPort(int smtpPort) {
         this.smtpPort = smtpPort;
     }
 
@@ -40,7 +42,7 @@ public class User {
      * Sets IMAP Port
      * @param imapPort
      */
-    public void setImapPort(String imapPort) {
+    public void setImapPort(int imapPort) {
         this.imapPort = imapPort;
     }
 
@@ -70,7 +72,7 @@ public class User {
     /**
      * Gets ICMP Port
      */
-    public String getSmtpPort() {
+    public int getSmtpPort() {
         return this.smtpPort;
     }
 
@@ -84,7 +86,7 @@ public class User {
     /**
      * Gets IMAP Port
      */
-    public String getImapPort() {
+    public int getImapPort() {
         return this.imapPort;
     }
 
@@ -100,5 +102,14 @@ public class User {
      */
     public String getPassword() {
         return this.password;
+    }
+
+    public void show() {
+        System.out.println("User: " + this.getUser());
+        System.out.println("Password: " + this.getPassword());
+        System.out.println("SMTP Host: " + this.getSmtpHost());
+        System.out.println("SMTP Port: " + this.getSmtpPort());
+        System.out.println("IMAP Host: " + this.getImapHost());
+        System.out.println("IMAP Port: " + this.getImapPort());
     }
 }
