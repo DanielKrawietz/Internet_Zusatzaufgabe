@@ -92,6 +92,10 @@ public class FolderMenu extends Menu {
 
     }
 
+    public void searchFolder(){
+
+    }
+
     private void printMessage(Message msg){
         try {
             System.out.println("Subject: " + msg.getSubject());

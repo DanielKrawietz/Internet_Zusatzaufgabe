@@ -45,7 +45,6 @@ public class Menu {
         }
 
     }
-    public
 
     public void addAction(String name, Menu action) {
         submenus.put(name, action::enter);
