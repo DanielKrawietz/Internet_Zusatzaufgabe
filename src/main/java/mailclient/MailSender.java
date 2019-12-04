@@ -8,9 +8,7 @@ import test.sendMail.SMTPAuthenticator;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,29 +21,24 @@ public class MailSender {
     String to = null;
     String subject = null;
     String from = null;
-    String url = null;
     String mailhost = null;
     String mailer = "MailSender";
-    String host = null;
-    String user = null;
-    String password = null;
-
     Scanner scanner = new Scanner(System.in);
-
     boolean debug = false;
-    boolean verbose = true;
-
+    boolean verbose = false;
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
     public void sendMail(User userObj) {
+
+        if(userObj.getPassword() == null || userObj.getUser() == null || userObj.getSmtpHost() == null) {
+            System.out.println("You are not logged in");
+            return ;
+        }
 
         /**
          * Message properties
          */
 
-        host = userObj.getUser();
-        user = userObj.getUser();
-        password = userObj.getPassword();
         mailhost = userObj.getSmtpHost();
         debug = true;
         from = userObj.getUser();
@@ -57,9 +50,11 @@ public class MailSender {
         subject = scanner.nextLine();
 
         try {
+
             /*
              * Initialize the JavaMail Session.
              */
+
             Properties props = System.getProperties();
             if (mailhost != null)
                 props.put("mail.smtp.host", mailhost);
@@ -75,16 +70,13 @@ public class MailSender {
             /*
              * Construct the message and send it.
              */
+
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(from));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
             msg.setSubject(subject);
             String text = collect(in);
-
-            // If the desired charset is known, you can use
-            // setText(text, charset)
             msg.setText(text);
-
             msg.setHeader("X-Mailer", mailer);
             msg.setSentDate(new Date());
 
