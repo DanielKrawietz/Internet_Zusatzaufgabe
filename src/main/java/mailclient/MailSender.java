@@ -72,8 +72,7 @@ public class MailSender extends Menu{
             props.put("mail.smtp.port", Integer.toString(userObj.getSmtpPort()));
             props.put("mail.smtp.user", userObj.getUser());
 
-            Authenticator authenticator = new SMTPAuthenticator(userObj.getUser(), userObj.getPassword());
-            Session session = Session.getInstance(props, authenticator);
+            Session session = Session.getInstance(props, new SMTPAuthenticator());
 
             // Get a Session object
             if (debug)

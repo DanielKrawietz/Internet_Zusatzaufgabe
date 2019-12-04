@@ -11,21 +11,17 @@ public class Login extends Menu {
     private Scanner scanner = new Scanner(System.in);
 
     public Login() {
+        this.addAction("exit", this::close);
         this.addAction("Login", this::readLoginData);
         this.addAction("Login with saved User", this::getLoginData);
         this.addAction("save this User", this::saveLoginDataToFile);
-        this.addAction("back", this::back);
-
     }
     private boolean debug = true;
 
-    public void back(){
-        super.exit();
-    }
-
-    public void exit() {
+    public void close(){
         System.exit(0);
     }
+
 
     private void readLoginData() {
 
@@ -38,6 +34,8 @@ public class Login extends Menu {
             userObj.setPassword("h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\\]@H@q=P<xV=-*xNn/n9~A3*/i");
             userObj.setSmtpHost("smtp.gmail.com");
             userObj.setSmtpPort(587);
+            userObj.setImapHost("imap.gmail.com");
+            userObj.setImapPort(993);
         }else{
             System.out.println("User: ");
             userObj.setUser(scanner.nextLine());
@@ -60,7 +58,8 @@ public class Login extends Menu {
             userObj.setImapPort(scanner.nextInt());
         }
         User.currentUser = userObj;
-        this.back();
+        this.addAction("exit", super::exit);
+        this.exit();
 
 
 
@@ -112,7 +111,7 @@ public class Login extends Menu {
             writer.write(userObj.getSmtpPort());
             writer.write(userObj.getImapHost());
             writer.write(userObj.getImapPort());
-        }catch (IOException e){
+        }catch (IOException | NullPointerException e){
             System.err.println("Could not create File");
         }finally {
             if (writer != null) {
