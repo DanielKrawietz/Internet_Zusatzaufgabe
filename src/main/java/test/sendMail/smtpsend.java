@@ -136,14 +136,10 @@ public class smtpsend {
 		optind++;
 		break;
 	    } else if (argv[optind].startsWith("-")) {
-		System.out.println(
-"Usage: smtpsend [[-L store-url] | [-T prot] [-H host] [-U user] [-P passwd]]");
-		System.out.println(
-"\t[-s subject] [-o from-address] [-c cc-addresses] [-b bcc-addresses]");
-		System.out.println(
-"\t[-f record-mailbox] [-M transport-host] [-d] [-a attach-file]");
-		System.out.println(
-"\t[-v] [-A] [-S] [address]");
+		System.out.println("Usage: smtpsend [[-L store-url] | [-T prot] [-H host] [-U user] [-P passwd]]");
+		System.out.println("\t[-s subject] [-o from-address] [-c cc-addresses] [-b bcc-addresses]");
+		System.out.println("\t[-f record-mailbox] [-M transport-host] [-d] [-a attach-file]");
+		System.out.println("\t[-v] [-A] [-S] [address]");
 		System.exit(1);
 	    } else {
 		break;
