@@ -2,7 +2,10 @@ package mailclient;
 
 import javax.mail.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class FolderMenu extends Menu {
 
@@ -34,6 +37,7 @@ public class FolderMenu extends Menu {
             } catch (MessagingException e) {
                 System.err.println("cant retrieve folders");
             }
+            System.out.println("Creating Folder Structure (this may take a while)");
             new FolderMenu(folder).enter();
         try {
             store.close();
@@ -46,21 +50,13 @@ public class FolderMenu extends Menu {
 
     public FolderMenu(Folder folder)  {
         this.folder = folder;
-    }
-
-    @Override
-    public void dialog() {
-        if (!folder.getName().equals(""))
-            System.out.println("Current Folder: " + folder.getName());
-
+        this.addAction("searchMail",this::searchFolder);
         try{
-            Menu fm = new Menu();
             if ((folder.getType() & Folder.HOLDS_FOLDERS) != 0) {
-                Folder[] f = folder.list(pattern);
+                Folder[] f = folder.list();
                 for (int i = 0; i < f.length; i++){
-                    Folder folder = f[i];
-                    Menu m = new FolderMenu(folder);
-                    fm.addAction("\tFolder:\t" + folder.getName(),m);
+                    Menu m = new FolderMenu(f[i]);
+                    this.addAction("\tFolder:\t" + folder.getName(),m);
                 }
 
             }
@@ -70,7 +66,7 @@ public class FolderMenu extends Menu {
                     Message[] m = folder.getMessages();
                     for (int i = 0; i < m.length; i++){
                         final Message msg = m[i];
-                        fm.addAction("\tMessage\t" + m[i].getSubject() + "\t" + m[i].getFrom()[0],() -> {printMessage(msg);});
+                        this.addAction("\tMessage:\t" + m[i].getSubject() + "\t" + m[i].getFrom()[0],() -> {printMessage(msg);});
                     }
                 }
             }catch (MessagingException e){
@@ -84,14 +80,112 @@ public class FolderMenu extends Menu {
 
             }
 
-            fm.enter();
         }catch (MessagingException e){
             System.err.println("Cant connect ");
         }
+    }
+
+    @Override
+    public void dialog() {
+        if (!folder.getName().equals(""))
+            System.out.println("Current Folder: " + folder.getName());
+        super.dialog();
+    }
+
+    private ArrayList<Folder> getSubfolders(Folder folder) throws MessagingException {
+        ArrayList<Folder> out = new ArrayList<>();
+        out.add(folder);
+        if ((folder.getType() & Folder.HOLDS_FOLDERS) !=0){
+            Folder[] folders = folder.list();
+            for (int i = 0; i < folders.length; i++){
+                out.addAll(getSubfolders(folders[i]));
+            }
+        }
+        return out;
+    }
+
+    public void searchFolder() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("For what do you want to search?");
+        String queryStr = in.nextLine();
+        System.out.println("Searching folder and Subfolders ...");
+        String[] queryWords = queryStr.split(" ");
+
+        Menu fm = new Menu();
+        ArrayList<Message> allmsgs = new ArrayList<>();
+        ArrayList<Folder> folders;
+        try {
+            folders = getSubfolders(folder);
+            for(Folder folder:folders){
+                folder.open(Folder.READ_ONLY);
+                if ((folder.getType() & Folder.HOLDS_MESSAGES) !=0){
+                    Message[] m = folder.getMessages();
+                    allmsgs.addAll(Arrays.asList(m));
+                }
+                folder.close();
+            }
+        } catch (MessagingException e) {
+            System.err.println("could not search all folders");
+        }
+        try {
+            for (Message m : allmsgs) {
+                boolean hit = false;
+
+                for (Address add : m.getFrom()) {
+                    for (String qw : queryWords) {
+                        if (add.toString().contains(qw))
+                            hit = true;
+                    }
+                }
+
+                for (Address add : m.getAllRecipients()) {
+                    for (String qw : queryWords) {
+                        if (add.toString().contains(qw))
+                            hit = true;
+                    }
+                }
+
+                for (String qw : queryWords) {
+                    if (m.getSubject().contains(qw))
+                        hit = true;
+                }
+
+                for (String qw : queryWords) {
+                    if (getMsgBody(m).contains(qw))
+                        hit = true;
+                }
+
+
+
+                if (hit)
+                    fm.addAction("\tMessage:\t" + m.getSubject() + "\t" + m.getFrom()[0], () -> {
+                        printMessage(m);
+                    });
+            }
+        }catch (MessagingException | IOException e) {
+        }
+        fm.enter();
 
     }
 
-    public void searchFolder(){
+    private String getMsgBody(Message m) throws MessagingException, IOException {
+        //start copy https://www.programcreek.com/java-api-examples/?class=javax.mail.Message&method=getContent
+
+        Object content = m.getContent();
+        if (content instanceof Multipart) {
+            StringBuilder messageContent = new StringBuilder();
+            Multipart multipart = (Multipart) content;
+            for (int i = 0; i < multipart.getCount(); i++) {
+                Part part = multipart.getBodyPart(i);
+                if (part.isMimeType("text/plain")) {
+                    messageContent.append(part.getContent().toString());
+                }
+            }
+            return messageContent.toString();
+        }
+        return content.toString();
+
+        //end Copy
 
     }
 
@@ -109,27 +203,8 @@ public class FolderMenu extends Menu {
             System.out.println();
             System.out.println();
 
-            String text;
-            //start copy https://www.programcreek.com/java-api-examples/?class=javax.mail.Message&method=getContent
 
-            Object content = msg.getContent();
-            if (content instanceof Multipart) {
-                StringBuilder messageContent = new StringBuilder();
-                Multipart multipart = (Multipart) content;
-                for (int i = 0; i < multipart.getCount(); i++) {
-                    Part part = multipart.getBodyPart(i);
-                    if (part.isMimeType("text/plain")) {
-                        messageContent.append(part.getContent().toString());
-                    }
-                }
-                text = messageContent.toString();
-            }
-            else
-                text = content.toString();
-
-            //end Copy
-
-            System.out.println(text);
+            System.out.println(getMsgBody(msg));
 
         } catch (MessagingException | IOException e) {
             System.err.println("Cant read Message");

@@ -16,7 +16,7 @@ public class Login extends Menu {
         this.addAction("Login with saved User", this::getLoginData);
         this.addAction("save this User", this::saveLoginDataToFile);
     }
-    private boolean debug = false;
+    private boolean debug = true;
 
     public void close(){
         System.exit(0);
