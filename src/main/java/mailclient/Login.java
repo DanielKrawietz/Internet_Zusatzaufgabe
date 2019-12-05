@@ -71,6 +71,8 @@ public class Login extends Menu {
             userObj.setImapHost(br.readLine());
             userObj.setImapPort(Integer.parseInt(br.readLine()));
 
+            this.addAction("exit", super::exit);
+            this.exit();
             User.currentUser = userObj;
         } catch (IOException e) {
             System.err.println("Could not read File");
