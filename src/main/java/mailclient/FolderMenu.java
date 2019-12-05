@@ -8,7 +8,6 @@ public class FolderMenu extends Menu {
 
     static String protocol = "imaps";
     String root = "";
-    String pattern = "%";
     Folder folder = null;
 
     public static void createRootFolderMenu(){
@@ -96,8 +95,9 @@ public class FolderMenu extends Menu {
 
     }
 
-    private void printMessage(Message msg){
+    private void printMessage(Message msg) {
         try {
+            msg.getFolder().open(Folder.READ_ONLY);
             System.out.println("Subject: " + msg.getSubject());
             System.out.print("From: ");
             for(Address s:msg.getFrom())
@@ -109,9 +109,35 @@ public class FolderMenu extends Menu {
             System.out.println();
             System.out.println();
 
-            System.out.println(msg.getContent());
+            String text;
+            //start copy https://www.programcreek.com/java-api-examples/?class=javax.mail.Message&method=getContent
+
+            Object content = msg.getContent();
+            if (content instanceof Multipart) {
+                StringBuilder messageContent = new StringBuilder();
+                Multipart multipart = (Multipart) content;
+                for (int i = 0; i < multipart.getCount(); i++) {
+                    Part part = multipart.getBodyPart(i);
+                    if (part.isMimeType("text/plain")) {
+                        messageContent.append(part.getContent().toString());
+                    }
+                }
+                text = messageContent.toString();
+            }
+            else
+                text = content.toString();
+
+            //end Copy
+
+            System.out.println(text);
+
         } catch (MessagingException | IOException e) {
             System.err.println("Cant read Message");
+        }finally {
+            try {
+                msg.getFolder().close();
+            } catch (NullPointerException | MessagingException e) {
+            }
         }
 
 
