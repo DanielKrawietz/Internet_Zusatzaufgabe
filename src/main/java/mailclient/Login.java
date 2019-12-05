@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Login extends Menu {
 
     private Scanner scanner = new Scanner(System.in);
+    private BufferedReader br = null;
 
     public Login() {
         this.addAction("exit", this::close);
@@ -43,10 +44,8 @@ public class Login extends Menu {
             System.out.println("Password: ");
             user.setPassword(scanner.nextLine());
 
-
             System.out.println("SMTP Host: ");
             user.setSmtpHost(scanner.nextLine());
-
 
             System.out.println("SMTP Port: ");
             user.setSmtpPort(scanner.nextInt());
@@ -67,18 +66,17 @@ public class Login extends Menu {
 
 
     private void getLoginData() {
-        Scanner fileScanner = null;
         try {
             File file = new File("logindata.txt");
-            fileScanner = new Scanner(file);
+            br = new BufferedReader(new FileReader(file));
 
             User userObj = new User();
-            userObj.setUser(fileScanner.nextLine());
-            userObj.setPassword(fileScanner.nextLine());
-            userObj.setSmtpHost(fileScanner.nextLine());
-            userObj.setSmtpPort(fileScanner.nextInt());
-            userObj.setImapHost(fileScanner.nextLine());
-            userObj.setImapPort(fileScanner.nextInt());
+            userObj.setUser(br.readLine());
+            userObj.setPassword(br.readLine());
+            userObj.setSmtpHost(br.readLine());
+            userObj.setSmtpPort(Integer.parseInt(br.readLine()));
+            userObj.setImapHost(br.readLine());
+            userObj.setImapPort(Integer.parseInt(br.readLine()));
 
             User.currentUser = userObj;
         } catch (IOException e) {
@@ -87,8 +85,14 @@ public class Login extends Menu {
             System.err.println("Error while reading data");
 
         } finally {
-            if (fileScanner!= null)
-                fileScanner.close();
+            if (br != null)
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    System.err.println("Error while reading data");
+                    this.addAction("exit", super::exit);
+                    this.exit();
+                }
         }
 
 
