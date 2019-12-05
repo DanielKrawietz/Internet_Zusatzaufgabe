@@ -13,14 +13,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Scanner;
 
 public class MailSender extends Menu{
 
     String to = null;
     String subject = null;
     String from = null;
-    String mailer = "MailSender";
+    String mailer = "mailclient";
 
     boolean debug = false;
     boolean verbose = false;
@@ -56,6 +55,8 @@ public class MailSender extends Menu{
 
 
         try {
+
+            // start of modified copy from https://mvnrepository.com/artifact/javax.mail/mail
 
             /*
              * Initialize the JavaMail Session.
@@ -181,4 +182,6 @@ public class MailSender extends Menu{
         }
         return sb.toString();
     }
+
+    // end of modified copy from https://mvnrepository.com/artifact/javax.mail/mail
 }

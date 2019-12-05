@@ -3,7 +3,7 @@
 ## How to use
 Run
 ```
-java Main.java
+java -jar mailclient.jar
 ```
 
 ## Files
@@ -24,3 +24,11 @@ depend on the decisions made before. The menus have different functionalities in
 to the menu function, so we decided to create different subclasses for each functionality.
 
 Other classes are utils for storing and retrieving information.
+
+## Code
+
+The code is based on the example programs folderlist and smtpsend.
+
+## Authors
+- Jan Schraff, Matr. Nr.: 29670
+- Daniel Krawietz, Matr. Nr.: 28885

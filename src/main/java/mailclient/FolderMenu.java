@@ -4,14 +4,12 @@ import javax.mail.*;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class FolderMenu extends Menu {
 
     static String protocol = "imaps";
-    String root = "";
     Folder folder = null;
 
     public static void createRootFolderMenu(){
@@ -48,9 +46,6 @@ public class FolderMenu extends Menu {
         }
     }
 
-
-
-
     public FolderMenu(Folder folder)  {
         this.folder = folder;
         this.addAction("search Mail",this::searchFolder);
@@ -61,8 +56,8 @@ public class FolderMenu extends Menu {
                     Menu m = new FolderMenu(f[i]);
                     this.addAction("\tFolder:\t" + f[i].getName(),m);
                 }
-
             }
+
             try {
                 folder.open(Folder.READ_ONLY);
                 if ((folder.getType() & Folder.HOLDS_MESSAGES) !=0){
@@ -78,9 +73,7 @@ public class FolderMenu extends Menu {
                 try {
                     folder.close();
                 }catch (IllegalStateException e){
-
                 }
-
             }
 
         }catch (MessagingException e){
@@ -129,11 +122,11 @@ public class FolderMenu extends Menu {
                     }
                     folder.close();
                 }
-
             }
         } catch (MessagingException e) {
             System.err.println("could not search all folders");
         }
+
         try {
             for (Message m : allmsgs) {
                 boolean hit = false;
@@ -162,8 +155,6 @@ public class FolderMenu extends Menu {
                         hit = true;
                 }
 
-
-
                 if (hit)
                     fm.addAction("\tMessage:\t" + m.getSubject() + "\t" + m.getFrom()[0], () -> {
                         printMessage(m);
@@ -172,7 +163,6 @@ public class FolderMenu extends Menu {
         }catch (MessagingException | IOException e) {
         }
         fm.enter();
-
     }
 
     private String getMsgBody(Message m) throws MessagingException, IOException {
@@ -193,7 +183,6 @@ public class FolderMenu extends Menu {
         return content.toString();
 
         //end Copy
-
     }
 
     private void printMessage(Message msg) {
@@ -221,8 +210,6 @@ public class FolderMenu extends Menu {
             } catch (NullPointerException | MessagingException e) {
             }
         }
-
-
     }
 
 }

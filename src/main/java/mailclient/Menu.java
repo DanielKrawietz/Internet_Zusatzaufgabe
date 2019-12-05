@@ -1,6 +1,5 @@
 package mailclient;
 
-import javax.mail.MessagingException;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -43,7 +42,6 @@ public class Menu {
         } catch (InputMismatchException e) {
             System.out.println("Not a possible Option");
         }
-
     }
 
     public void addAction(String name, Menu action) {

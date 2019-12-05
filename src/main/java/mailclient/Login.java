@@ -1,7 +1,5 @@
 package mailclient;
 
-
-
 import java.io.*;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -18,7 +16,6 @@ public class Login extends Menu {
         this.addAction("save this User", this::saveLoginDataToFile);
     }
 
-
     public void close(){
         System.exit(0);
     }
@@ -29,7 +26,6 @@ public class Login extends Menu {
             User.currentUser = new User();
 
         User user = User.currentUser;
-
 
         System.out.println("User: ");
         user.setUser(scanner.nextLine());
@@ -55,8 +51,6 @@ public class Login extends Menu {
         this.addAction("exit", super::exit);
         this.exit();
     }
-
-
 
     private void getLoginData() {
         try {
@@ -89,9 +83,6 @@ public class Login extends Menu {
                     this.exit();
                 }
         }
-
-
-
     }
 
     private void saveLoginDataToFile() {
@@ -132,7 +123,5 @@ public class Login extends Menu {
                 }
             }
         }
-
-
     }
 }
