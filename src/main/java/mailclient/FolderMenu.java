@@ -36,6 +36,7 @@ public class FolderMenu extends Menu {
                 folder = store.getDefaultFolder();
             } catch (MessagingException e) {
                 System.err.println("cant retrieve folders");
+                return;
             }
             System.out.println("Creating Folder Structure (this may take a while)");
             new FolderMenu(folder).enter();
