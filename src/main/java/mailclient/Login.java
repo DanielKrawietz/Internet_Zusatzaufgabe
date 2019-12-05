@@ -16,7 +16,7 @@ public class Login extends Menu {
         this.addAction("Login with saved User", this::getLoginData);
         this.addAction("save this User", this::saveLoginDataToFile);
     }
-    private boolean debug = true;
+    private boolean debug = false;
 
     public void close(){
         System.exit(0);
@@ -50,19 +50,18 @@ public class Login extends Menu {
 
             System.out.println("SMTP Port: ");
             user.setSmtpPort(scanner.nextInt());
+            scanner.nextLine();
 
             System.out.println("IMAP Host: ");
             user.setImapHost(scanner.nextLine());
 
             System.out.println("IMAP Port: ");
             user.setImapPort(scanner.nextInt());
+            scanner.nextLine();
         }
         User.currentUser = user;
         this.addAction("exit", super::exit);
         this.exit();
-
-
-
     }
 
 
