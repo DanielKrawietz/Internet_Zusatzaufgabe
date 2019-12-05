@@ -1,6 +1,7 @@
 package mailclient;
 
 import javax.mail.*;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ public class FolderMenu extends Menu {
     Folder folder = null;
 
     public static void createRootFolderMenu(){
+            System.out.println("getting Messages");
             User userObj = User.currentUser;
             String host = userObj.getImapHost();
             String user = userObj.getUser();
@@ -51,13 +53,13 @@ public class FolderMenu extends Menu {
 
     public FolderMenu(Folder folder)  {
         this.folder = folder;
-        this.addAction("searchMail",this::searchFolder);
+        this.addAction("search Mail",this::searchFolder);
         try{
             if ((folder.getType() & Folder.HOLDS_FOLDERS) != 0) {
                 Folder[] f = folder.list();
                 for (int i = 0; i < f.length; i++){
                     Menu m = new FolderMenu(f[i]);
-                    this.addAction("\tFolder:\t" + folder.getName(),m);
+                    this.addAction("\tFolder:\t" + f[i].getName(),m);
                 }
 
             }
@@ -118,12 +120,16 @@ public class FolderMenu extends Menu {
         try {
             folders = getSubfolders(folder);
             for(Folder folder:folders){
-                folder.open(Folder.READ_ONLY);
+
                 if ((folder.getType() & Folder.HOLDS_MESSAGES) !=0){
+                    folder.open(Folder.READ_ONLY);
                     Message[] m = folder.getMessages();
-                    allmsgs.addAll(Arrays.asList(m));
+                    for(Message mm : m){
+                        allmsgs.add(new MimeMessage( (MimeMessage) mm));
+                    }
+                    folder.close();
                 }
-                folder.close();
+
             }
         } catch (MessagingException e) {
             System.err.println("could not search all folders");
