@@ -17,7 +17,7 @@ public class Login extends Menu {
         this.addAction("Login with saved User", this::getLoginData);
         this.addAction("save this User", this::saveLoginDataToFile);
     }
-    private boolean debug = false;
+
 
     public void close(){
         System.exit(0);
@@ -30,34 +30,27 @@ public class Login extends Menu {
 
         User user = User.currentUser;
 
-        if (debug){
-            user.setUser("internetzusatzaufgabe2019@gmail.com");
-            user.setPassword("h[5b)h'{[.dy.R1$Fbk~<})&1Vr7.OpKyfc581\\]@H@q=P<xV=-*xNn/n9~A3*/i");
-            user.setSmtpHost("smtp.gmail.com");
-            user.setSmtpPort(587);
-            user.setImapHost("imap.gmail.com");
-            user.setImapPort(993);
-        }else{
-            System.out.println("User: ");
-            user.setUser(scanner.nextLine());
 
-            System.out.println("Password: ");
-            user.setPassword(scanner.nextLine());
+        System.out.println("User: ");
+        user.setUser(scanner.nextLine());
 
-            System.out.println("SMTP Host: ");
-            user.setSmtpHost(scanner.nextLine());
+        System.out.println("Password: ");
+        user.setPassword(scanner.nextLine());
 
-            System.out.println("SMTP Port: ");
-            user.setSmtpPort(scanner.nextInt());
-            scanner.nextLine();
+        System.out.println("SMTP Host: ");
+        user.setSmtpHost(scanner.nextLine());
 
-            System.out.println("IMAP Host: ");
-            user.setImapHost(scanner.nextLine());
+        System.out.println("SMTP Port: ");
+        user.setSmtpPort(scanner.nextInt());
+        scanner.nextLine();
 
-            System.out.println("IMAP Port: ");
-            user.setImapPort(scanner.nextInt());
-            scanner.nextLine();
-        }
+        System.out.println("IMAP Host: ");
+        user.setImapHost(scanner.nextLine());
+
+        System.out.println("IMAP Port: ");
+        user.setImapPort(scanner.nextInt());
+        scanner.nextLine();
+
         User.currentUser = user;
         this.addAction("exit", super::exit);
         this.exit();
